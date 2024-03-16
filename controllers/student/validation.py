@@ -1,5 +1,6 @@
 import re
 
+from beanie import PydanticObjectId
 from fastapi import HTTPException
 
 from controllers.student.crud_helper import find_student_on_db
@@ -11,8 +12,20 @@ async def validate_nim_is_unique(nim: str):
         raise HTTPException(status_code=400, detail="NIM duplikat")
 
 
+async def validate_nim_is_unique_on_update(nim: str, idStudent: PydanticObjectId):
+    student = await find_student_on_db({"nim": nim, "_id": {"$ne": idStudent}})
+    if student:
+        raise HTTPException(status_code=400, detail="NIM duplikat")
+
+
 async def validate_email_is_unique(email: str):
     student = await find_student_on_db({"email": email})
+    if student:
+        raise HTTPException(status_code=400, detail="Email duplikat")
+
+
+async def validate_email_is_unique_on_update(email: str, idStudent: PydanticObjectId):
+    student = await find_student_on_db({"email": email, "_id": {"$ne": idStudent}})
     if student:
         raise HTTPException(status_code=400, detail="Email duplikat")
 

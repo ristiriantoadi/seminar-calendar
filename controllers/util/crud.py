@@ -83,3 +83,19 @@ async def delete_on_db(
             }
         },
     )
+
+
+async def find_all_data_with_pagination_on_db(
+    criteria: dict,
+    collection: AsyncIOMotorCollection,
+    skip: int,
+    size: int = 10,
+    sort: str = "updateTime",
+    dir: int = 1,
+):
+    criteria["isDelete"] = False
+    datas_cursor = collection.find(criteria).skip(skip).limit(size).sort(sort, dir)
+    datas = await datas_cursor.to_list(length=size)
+    totalElements = await collection.count_documents(criteria)
+    totalPages = math.ceil(totalElements / size)
+    return datas, totalPages, totalElements
