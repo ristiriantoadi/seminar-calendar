@@ -4,3 +4,4 @@
 from config.mongo import MGDB_SEMINAR_CALENDAR
 
 ADMIN = MGDB_SEMINAR_CALENDAR.admins
+STUDENT = MGDB_SEMINAR_CALENDAR.students

@@ -13,6 +13,9 @@ PWDCONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme_admin = OAuth2PasswordBearer(
     tokenUrl="admin/auth/login", scheme_name="admin_oauth2_schema"
 )
+oauth2_scheme_student = OAuth2PasswordBearer(
+    tokenUrl="student/auth/login", scheme_name="student_oauth2_schema"
+)
 
 
 def create_token(user: OutputUser):

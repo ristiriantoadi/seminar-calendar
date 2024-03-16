@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 
-from models.user.user import OutputUser
+from models.user.user import OutputUser, User
 
 
-class Admin(OutputUser):
+class Admin(User):
     nip: str
 
 
-class OutputAdmin(OutputUser):
+class OutputAdmin(OutputUser, Admin):
     pass
 
 

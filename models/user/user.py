@@ -9,11 +9,11 @@ class Credential(BaseModel):
     isFirstLogin: bool = True
 
 
-class OutputUser(DefaultModel):
+class User(DefaultModel):
     name: str
     email: str
     credential: Credential
 
 
-class OutputUser(OutputUser):
+class OutputUser(User):
     id: PydanticObjectId = Field(alias="_id")
