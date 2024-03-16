@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+from fastapi import HTTPException
 from pydantic import parse_obj_as
 
 from config.mongo_collection import TEACHER
@@ -7,6 +8,7 @@ from controllers.util.crud import (
     find_all_data_with_pagination_on_db,
     find_one_on_db,
     insert_one_on_db,
+    update_on_db,
 )
 from models.authentication.authentication import TokenData
 from models.user.teacher import OutputTeacher, Teacher
@@ -17,6 +19,12 @@ async def find_teacher_on_db(criteria: dict) -> OutputTeacher:
     if teacher:
         return OutputTeacher(**teacher)
     return None
+
+
+async def find_teacher(criteria: dict):
+    teacher = await find_teacher_on_db(criteria)
+    if teacher is None:
+        raise HTTPException(status_code=404, detail="Dosen tidak ditemukan")
 
 
 async def insert_teacher_to_db(
@@ -36,3 +44,16 @@ async def find_all_teachers_with_pagination_on_db(
     )
     datas = parse_obj_as(List[OutputTeacher], datas)
     return datas, totalPages, totalElements
+
+
+async def update_teacher_on_db(
+    updateData: dict,
+    currentUser: TokenData,
+    criteria: dict,
+):
+    await update_on_db(
+        updateData=updateData,
+        currentUser=currentUser,
+        collection=TEACHER,
+        criteria=criteria,
+    )

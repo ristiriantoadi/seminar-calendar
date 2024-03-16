@@ -1,5 +1,6 @@
 import re
 
+from beanie import PydanticObjectId
 from fastapi import HTTPException
 
 from controllers.teacher.crud_helper import find_teacher_on_db
@@ -17,7 +18,23 @@ async def validate_nip_is_unique(nip: str):
         raise HTTPException(status_code=400, detail="NIP duplikat")
 
 
+async def validate_nip_is_unique_on_update(nip: str, idTeacher: str):
+    teacher = await find_teacher_on_db(
+        {"nip": nip, "_id": {"$ne": PydanticObjectId(idTeacher)}}
+    )
+    if teacher:
+        raise HTTPException(status_code=400, detail="NIP duplikat")
+
+
 async def validate_email_is_unique(email: str):
     teacher = await find_teacher_on_db({"email": email})
+    if teacher:
+        raise HTTPException(status_code=400, detail="Email duplikat")
+
+
+async def validate_email_is_unique_on_update(email: str, idTeacher: str):
+    teacher = await find_teacher_on_db(
+        {"email": email, "_id": {"$ne": PydanticObjectId(idTeacher)}}
+    )
     if teacher:
         raise HTTPException(status_code=400, detail="Email duplikat")

@@ -82,6 +82,8 @@ async def update_student(
     input: InputStudent,
     currentUser: TokenData = Depends(get_current_user_admin),
 ):
+    await find_student({"_id": PydanticObjectId(idStudent)})
+
     validate_email_is_valid(input.email)
     validate_nim_is_valid(input.nim)
     await validate_email_is_unique_on_update(
@@ -91,7 +93,6 @@ async def update_student(
         nim=input.nim, idStudent=PydanticObjectId(idStudent)
     )
 
-    await find_student({"_id": PydanticObjectId(idStudent)})
     await update_student_on_db(
         updateData=input.dict(),
         currentUser=currentUser,

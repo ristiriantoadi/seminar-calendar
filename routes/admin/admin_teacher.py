@@ -1,14 +1,19 @@
+from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends
 
 from controllers.auth.admin import get_current_user_admin
 from controllers.auth.authentication import PWDCONTEXT
 from controllers.teacher.crud_helper import (
     find_all_teachers_with_pagination_on_db,
+    find_teacher,
     insert_teacher_to_db,
+    update_teacher_on_db,
 )
 from controllers.teacher.validation import (
     validate_email_is_unique,
+    validate_email_is_unique_on_update,
     validate_nip_is_unique,
+    validate_nip_is_unique_on_update,
     validate_nip_is_valid,
 )
 from controllers.util.auth import generate_random_string
@@ -67,3 +72,24 @@ async def get_teachers(
         sortDir=dir,
         content=teachers,
     )
+
+
+@route_admin_teacher.put("/{idTeacher}")
+async def update_teacher(
+    idTeacher: str,
+    input: InputTeacher,
+    currentUser: TokenData = Depends(get_current_user_admin),
+):
+    await find_teacher({"_id": PydanticObjectId(idTeacher)})
+
+    validate_nip_is_valid(input.nip)
+    validate_email_is_valid(input.email)
+    await validate_nip_is_unique_on_update(nip=input.nip, idTeacher=idTeacher)
+    await validate_email_is_unique_on_update(input.email, idTeacher=idTeacher)
+
+    await update_teacher_on_db(
+        updateData=input.dict(),
+        currentUser=currentUser,
+        criteria={"_id": PydanticObjectId(idTeacher)},
+    )
+    return "OK"
