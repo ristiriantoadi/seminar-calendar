@@ -3,6 +3,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from config.config import INIT_KEY
 from controllers.admin.init import insert_first_admin_to_db, validate_no_admin_on_db
+from controllers.auth.admin import authenticate_admin
+from controllers.auth.authentication import create_token
+from models.authentication.auth_dto import OutputLogin
 
 route_admin_auth = APIRouter(
     prefix="/admin/auth",
@@ -18,11 +21,16 @@ async def init_first_admin(key: str):
 
     await validate_no_admin_on_db()
     await insert_first_admin_to_db()
+    return "OK"
 
 
-@route_admin_auth.get("/login")
+@route_admin_auth.post("/login", response_model=OutputLogin)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    pass
+    admin = await authenticate_admin(
+        username=form_data.username, password=form_data.password
+    )
+    access_token = create_token(admin)
+    return OutputLogin(access_token=access_token)
 
 
 # @route_admin_auth.get("/check_token")

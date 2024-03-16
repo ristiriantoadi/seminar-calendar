@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 
-from models.user.user import OutputUser, User
+from models.user.user import OutputUser
 
 
-class Admin(User):
+class Admin(OutputUser):
     nip: str
 
 

@@ -3,7 +3,7 @@ from controllers.util.crud import find_one_on_db, insert_one_on_db
 from models.user.admin import Admin, OutputAdmin
 
 
-async def get_admin_on_db(criteria: dict) -> OutputAdmin:
+async def find_admin_on_db(criteria: dict) -> OutputAdmin:
     admin = await find_one_on_db(criteria=criteria, collection=ADMIN)
     if admin:
         return OutputAdmin(**admin)

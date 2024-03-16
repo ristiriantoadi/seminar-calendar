@@ -7,6 +7,7 @@ from passlib.context import CryptContext
 
 from config.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 from models.authentication.authentication import TokenData
+from models.user.user import OutputUser
 
 PWDCONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme_member = OAuth2PasswordBearer(
@@ -14,9 +15,9 @@ oauth2_scheme_member = OAuth2PasswordBearer(
 )
 
 
-def create_token(user: dict):
+def create_token(user: OutputUser):
     data = TokenData(
-        userId=str(user["_id"]),
+        userId=str(user.id),
         exp=datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
     encoded_jwt = jwt.encode(data.dict(), SECRET_KEY, algorithm=ALGORITHM)
