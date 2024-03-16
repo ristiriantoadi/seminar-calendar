@@ -5,6 +5,7 @@ from pydantic import parse_obj_as
 
 from config.mongo_collection import STUDENT
 from controllers.util.crud import (
+    delete_on_db,
     find_all_data_with_pagination_on_db,
     find_one_on_db,
     insert_one_on_db,
@@ -53,3 +54,7 @@ async def update_student_on_db(
         collection=STUDENT,
         criteria=criteria,
     )
+
+
+async def delete_student_on_db(criteria: dict, currentUser: TokenData):
+    await delete_on_db(collection=STUDENT, criteria=criteria, currentUser=currentUser)
