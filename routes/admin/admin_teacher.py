@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 from controllers.auth.admin import get_current_user_admin
 from controllers.auth.authentication import PWDCONTEXT
 from controllers.teacher.crud_helper import (
+    delete_teacher_on_db,
     find_all_teachers_with_pagination_on_db,
     find_teacher,
     insert_teacher_to_db,
@@ -91,5 +92,16 @@ async def update_teacher(
         updateData=input.dict(),
         currentUser=currentUser,
         criteria={"_id": PydanticObjectId(idTeacher)},
+    )
+    return "OK"
+
+
+@route_admin_teacher.delete("/{idTeacher}")
+async def delete_teacher(
+    idTeacher: str, currentUser: TokenData = Depends(get_current_user_admin)
+):
+    await find_teacher({"_id": PydanticObjectId(idTeacher)})
+    await delete_teacher_on_db(
+        criteria={"_id": PydanticObjectId(idTeacher)}, currentUser=currentUser
     )
     return "OK"
