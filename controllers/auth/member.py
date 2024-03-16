@@ -1,15 +1,15 @@
+from controllers.member.member_crud import find_member_on_db
 from fastapi import Depends, HTTPException
 
 from controllers.auth.authentication import (
     PWDCONTEXT,
     create_token,
     get_current_user,
-    oauth2_scheme_member,
+    oauth2_scheme_admin,
 )
-from controllers.member.member_crud import find_member_on_db
 
 
-def get_current_user_member(token: str = Depends(oauth2_scheme_member)):
+def get_current_user_member(token: str = Depends(oauth2_scheme_admin)):
     return get_current_user(token)
 
 

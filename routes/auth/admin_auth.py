@@ -1,11 +1,14 @@
+from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from config.config import INIT_KEY
+from controllers.admin.crud_helper import find_admin_on_db
 from controllers.admin.init import insert_first_admin_to_db, validate_no_admin_on_db
-from controllers.auth.admin import authenticate_admin
+from controllers.auth.admin import authenticate_admin, get_current_user_admin
 from controllers.auth.authentication import create_token
-from models.authentication.auth_dto import OutputLogin
+from models.authentication.auth_dto import OutputCheckToken, OutputLogin
+from models.authentication.authentication import TokenData
 
 route_admin_auth = APIRouter(
     prefix="/admin/auth",
@@ -33,7 +36,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return OutputLogin(access_token=access_token)
 
 
-# @route_admin_auth.get("/check_token")
-# async def check_token(current_user: TokenData = Depends(get_current_user_member)):
-#     member = await find_member_on_db({"_id": PydanticObjectId(current_user.userId)})
-#     return member
+@route_admin_auth.get("/check_token", response_model=OutputCheckToken)
+async def check_token(current_user: TokenData = Depends(get_current_user_admin)):
+    admin = await find_admin_on_db({"_id": PydanticObjectId(current_user.userId)})
+    return OutputCheckToken(name=admin.name, isFirstLogin=admin.credential.isFirstLogin)

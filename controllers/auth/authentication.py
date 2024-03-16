@@ -10,8 +10,8 @@ from models.authentication.authentication import TokenData
 from models.user.user import OutputUser
 
 PWDCONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme_member = OAuth2PasswordBearer(
-    tokenUrl="guest/auth/login", scheme_name="member_oauth2_schema"
+oauth2_scheme_admin = OAuth2PasswordBearer(
+    tokenUrl="admin/auth/login", scheme_name="admin_oauth2_schema"
 )
 
 
@@ -24,7 +24,7 @@ def create_token(user: OutputUser):
     return encoded_jwt
 
 
-def get_current_user(token: str):
+def get_current_user(token: str) -> TokenData:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         tokenData = TokenData(

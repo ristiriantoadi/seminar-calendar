@@ -8,8 +8,8 @@ class InputRegistration(BaseModel):
 
 
 class OutputCheckToken(BaseModel):
-    username: str
     name: str
+    isFirstLogin: bool
 
 
 class OutputLogin(BaseModel):
