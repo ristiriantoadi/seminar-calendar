@@ -1,0 +1,14 @@
+# MGDB
+DB = "seminar_calendar"
+
+INIT_KEY = "seminarcalendar"
+
+# JWT
+SECRET_KEY = "cab07a467f8cb3976ceea81c2e58e7e0c8d8cbebeaba88dd90731196181d916b"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
+
+# FIRST ADMIN
+NAME = "ADMIN"
+NO_ID = "001"
+PASSWORD = "Pass1234"
